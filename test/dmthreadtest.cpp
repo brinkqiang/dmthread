@@ -36,7 +36,7 @@ public:
             for (int i = 0; i < MAX_THREADS; ++i)
             {
                 threadlist.push_back(new std::thread([] {
-                    for (int j = 0; j < 100000000; ++j)
+                    for (int j = 0; j < 10000000; ++j)
                     {
                         mutexLock.lock();
                         gCount += j;
@@ -65,7 +65,7 @@ public:
             {
                 threadlist.push_back(new std::thread([] {
 
-                    for (int j = 0; j < 100000000; ++j)
+                    for (int j = 0; j < 10000000; ++j)
                     {
                         gLock.lock();
                         gCount += j;
