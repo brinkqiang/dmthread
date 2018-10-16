@@ -32,11 +32,11 @@ public:
             //≤‚ ‘mutex  
             printf("testing mutex...\n");
 
-            clock_t start = clock();
+            time_t start = time(0);
             for (int i = 0; i < MAX_THREADS; ++i)
             {
                 threadlist.push_back(new std::thread([] {
-                    for (int j = 0; j < 1000000; ++j)
+                    for (int j = 0; j < 10000000; ++j)
                     {
                         mutexLock.lock();
                         gCount += j;
@@ -49,9 +49,9 @@ public:
             {
                 in->join();
             }
-            clock_t finish = clock();
+            time_t finish = time(0);
             printf("result:%llu\n", gCount);
-            printf("cost:%dms\n", finish - start);
+            printf("cost:%llu s\n", finish - start);
         }
         {
             std::list<std::thread*> threadlist;
@@ -59,12 +59,12 @@ public:
             //≤‚ ‘mutex  
             printf("testing CLock...\n");
 
-            clock_t start = clock();
+            time_t start = time(0);
             for (int i = 0; i < MAX_THREADS; ++i)
             {
                 threadlist.push_back(new std::thread([] {
 
-                    for (int j = 0; j < 1000000; ++j)
+                    for (int j = 0; j < 10000000; ++j)
                     {
                         gLock.lock();
                         gCount += j;
@@ -78,9 +78,9 @@ public:
             {
                 in->join();
             }
-            clock_t finish = clock();
+            time_t finish = time(0);
             printf("result:%llu\n", gCount);
-            printf("cost:%dms\n", finish - start);
+            printf("cost:%llu s\n", finish - start);
         }
     }
 
