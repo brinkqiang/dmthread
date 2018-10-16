@@ -8,7 +8,7 @@
 
 #include <mutex>
 
-#define MAX_THREADS 10
+#define MAX_THREADS 16
 #define MAX_LOCK 1000000;
 
 uint64_t gCount = 0;
