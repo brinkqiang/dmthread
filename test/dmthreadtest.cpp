@@ -53,6 +53,7 @@ public:
             printf("result:%llu\n", gCount);
             printf("cost:%llu s\n", finish - start);
         }
+        gCount = 0;
         {
             std::list<std::thread*> threadlist;
 
