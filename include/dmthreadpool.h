@@ -1,5 +1,5 @@
-#ifndef THREAD_POOL_H
-#define THREAD_POOL_H
+#ifndef __DMTHREAD_POOL_H__
+#define __DMTHREAD_POOL_H__
 
 #include <vector>
 #include <queue>
@@ -11,13 +11,13 @@
 #include <functional>
 #include <stdexcept>
 
-class ThreadPool {
+class CDMThreadPool {
 public:
-    ThreadPool(size_t);
+    CDMThreadPool(size_t);
     template<class F, class... Args>
     auto enqueue(F&& f, Args&&... args) 
         -> std::future<typename std::invoke_result_t<F,Args...>>;
-    ~ThreadPool();
+    ~CDMThreadPool();
 private:
     // need to keep track of threads so we can join them
     std::vector< std::thread > workers;
@@ -31,7 +31,7 @@ private:
 };
  
 // the constructor just launches some amount of workers
-inline ThreadPool::ThreadPool(size_t threads)
+inline CDMThreadPool::CDMThreadPool(size_t threads)
     :   stop(false)
 {
     for(size_t i = 0;i<threads;++i)
@@ -60,7 +60,7 @@ inline ThreadPool::ThreadPool(size_t threads)
 
 // add new work item to the pool
 template<class F, class... Args>
-auto ThreadPool::enqueue(F&& f, Args&&... args) 
+auto CDMThreadPool::enqueue(F&& f, Args&&... args) 
     -> std::future<typename std::invoke_result_t<F,Args...>>
 {
     using return_type = typename std::invoke_result_t<F, Args...>;
@@ -84,7 +84,7 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
 }
 
 // the destructor joins all threads
-inline ThreadPool::~ThreadPool()
+inline CDMThreadPool::~CDMThreadPool()
 {
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
@@ -95,4 +95,4 @@ inline ThreadPool::~ThreadPool()
         worker.join();
 }
 
-#endif
+#endif // __DMTHREAD_POOL_H__
