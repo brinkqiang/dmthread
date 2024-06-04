@@ -1,97 +1,19 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.21)
 
 PROJECT(dmthread)
 
 LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+INCLUDE(cmake/ModuleImport.cmake)
+INCLUDE(cmake/ModuleCompileOptions.cmake)
+ModuleSetCompileOptions()
 
-IF (WIN32)
-    MESSAGE(STATUS "Now is windows")
+if(WIN32)
+add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
+add_definitions(/wd4996)
+endif(WIN32)
 
-    SET(DMOS_NAME "win")
+InterfaceImport("dmthread" "include" "")
 
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" )
-    IF(MSVC)
-        ADD_DEFINITIONS(/bigobj)
-        ADD_COMPILE_OPTIONS(/W3 /wd4005 /wd4068 /wd4244 /wd4267 /wd4800)
-        ADD_DEFINITIONS(/DNOMINMAX /DWIN32_LEAN_AND_MEAN=1 /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS)
-        IF (MSVC_VERSION GREATER_EQUAL 1900)
-            INCLUDE(CheckCXXCompilerFlag)
-            CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
-            IF (_cpp_latest_flag_supported)
-                ADD_COMPILE_OPTIONS("/std:c++latest")
-            ENDIF()
-    	ENDIF()
-    ENDIF()
-ELSEIF (APPLE)
-    MESSAGE(STATUS "Now is Apple systems")  
-
-    SET(DMOS_NAME "mac") 
-
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread" )
-ELSEIF (UNIX)
-    MESSAGE(STATUS "Now is UNIX-like OS")  
- 
-    SET(DMOS_NAME "lin") 
-    
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread" )    
-ENDIF ()
-
-ADD_DEFINITIONS(-DUSE_DMTHREAD)
-
-IF (WIN32)
-    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src/windows)
-ENDIF(WIN32)
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/test)
-
-LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib)
-
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
-
-FILE(GLOB_RECURSE DMTHREAD_SOURCES
-${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp
-${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
-
-${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc
-${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
-${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp
-${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
-)
-
-IF (WIN32)
-    LIST(APPEND DMTHREAD_SOURCES)
-ENDIF(WIN32)
-
-FILE(GLOB_RECURSE DMTHREADTEST_SOURCES
-${CMAKE_CURRENT_SOURCE_DIR}/test/dmthreadtest.cpp)
-
-FILE(GLOB_RECURSE DMTCONDITIONTEST_SOURCES
-${CMAKE_CURRENT_SOURCE_DIR}/test/dmconditiontest.cpp)
-
-ADD_LIBRARY(dmthread STATIC ${DMTHREAD_SOURCES})
-ADD_EXECUTABLE(dmthreadtest ${DMTHREADTEST_SOURCES})
-TARGET_LINK_LIBRARIES(dmthreadtest dmthread)
-
-ADD_EXECUTABLE(dmconditiontest ${DMTCONDITIONTEST_SOURCES})
-TARGET_LINK_LIBRARIES(dmconditiontest dmthread)
-#ADD_CUSTOM_COMMAND(
-#TARGET dmthreadtest
-#PRE_BUILD
-#COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#${CMAKE_CURRENT_SOURCE_DIR}/config/test.csv
-#$<TARGET_FILE_DIR:dmthreadtest>
-#)
-
-#INSTALL(DIRECTORY include/ DESTINATION include)
-#INSTALL(TARGETS dmthread
-#        RUNTIME DESTINATION bin
-#        LIBRARY DESTINATION lib
-#        ARCHIVE DESTINATION lib)
-
-#SET(DMTHREAD_LIBS "dmthread")
-#MARK_AS_ADVANCED(${DMTHREAD_LIBS})
+if (PROJECT_IS_TOP_LEVEL)
+    ExeImport("test" "dmthread")
+endif(PROJECT_IS_TOP_LEVEL)
