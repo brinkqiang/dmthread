@@ -21,6 +21,5 @@ dmthread
 ```cpp
 ```
 ## Contacts
-[![Join the chat](https://badges.gitter.im/brinkqiang/dmthread/Lobby.svg)](https://gitter.im/brinkqiang/dmthread)
 
 ## Thanks
