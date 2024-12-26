@@ -22,7 +22,7 @@ int main()
     }
 
     for(auto && result: results)
-        std::cout << result.get() << ' ';
+        std::cout << result.get() << ' ' << std::endl;
     std::cout << std::endl;
     
     return 0;
